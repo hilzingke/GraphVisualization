@@ -91,8 +91,9 @@ public class Main {
         graph1.setAutoCreate( true );
 
         // defining css style for graph
-        graph1.setAttribute("ui.stylehseet", "graph { text-mode: normal;" +
-                "                               text-alignment: at-right; text-color: #222;}");
+        graph1.setAttribute("ui.stylesheet", "graph { text-mode: normal;" +
+                                                "text-alignment: at-right; text-color: #222;}" +
+                                                "edge { shape: cubic-curve; arrow-shape: arrow;}");
         // passing false will deactivate auto placement - not recommended
         graph1.display();
     }
@@ -123,11 +124,15 @@ public class Main {
         graph1.setAutoCreate( false );
 
         // defining css style for graph
-        graph1.setAttribute("ui.stylehseet", "graph {    text-mode: normal; " +
-                                                "text-alignment: at-right; text-color: #222;}");
-        // passing false will deactivate auto placement - not recommendet
+        graph1.removeAttribute("ui.stylesheet");
+        //graph1.setAttribute("ui.stylehseet", "url(C:\\Users\\KevinHilzinger\\IdeaProjects\\GraphVisualization\\stylesheet.css)");
+        graph1.setAttribute("ui.stylesheet", "graph {    text-mode: normal; " +
+                                                "text-alignment: at-right; text-color: #222;}" +
+                                                "edge { shape: cubic-curve; arrow-shape: arrow;}");
+        // passing false will deactivate auto placement - not recommended
         graph1.display(false);
     }
+
 
 
 }
