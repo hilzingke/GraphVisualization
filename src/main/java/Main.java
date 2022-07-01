@@ -1,8 +1,14 @@
+import org.graphstream.algorithm.Dijkstra;
 import org.graphstream.graph.*;
 import org.graphstream.graph.implementations.*;
+import org.graphstream.stream.file.FileSourceDGS;
 import org.graphstream.ui.layout.HierarchicalLayout;
 import org.graphstream.ui.view.Viewer;
 
+import org.graphstream.algorithm.Dijkstra.Element;
+import org.graphstream.graph.Graph;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Arrays.asList;
@@ -10,7 +16,7 @@ import static java.util.Arrays.asList;
 public class Main {
     public static void main(String args[]) {
 
-
+        System.setProperty("org.graphstream.ui", "swing");
         List<Host> personList = asList(new Host(1, "Nicolas"),
                 new Host(2, "Erika"),
                 new Host(3, "Vlad"),
@@ -66,7 +72,7 @@ public class Main {
         for (EdgeHost e : edgeList) {
             graph1.addEdge( e.getStartHost().getPersonName() + "-" + e.getEndHost().getPersonName(),
                         e.getStartHost().getPersonName(),
-                        e.getEndHost().getPersonName())
+                        e.getEndHost().getPersonName(), true)
                     .setAttribute("days", e.getDistance());
         }
 
@@ -77,23 +83,82 @@ public class Main {
 
         displayAutoLayout(graph1);
         displayFixedLayout(graph1);
+
+        //apply structure to allow readAll
+        String my_graph;
+
+        my_graph = "DGS004\n"
+                + "my 0 0\n";
+
+        for (Host g : personList) {
+            my_graph = my_graph + "an" + g.getPersonName() + "\n";
+        }
+                /*+ "an A \n"
+                + "an B \n"
+                + "an C \n"
+                + "an D \n"
+                + "an E \n"
+                + "an F \n"
+                + "ae AB A B weight:1 \n"
+                + "ae AD A D weight:1 \n"
+                + "ae BC B C weight:1 \n"
+                + "ae CF C F weight:10 \n"
+                + "ae DE D E weight:1 \n"
+                        + "ae EF E F weight:1 \n"*/
+        ;
+        FileSourceDGS source = new FileSourceDGS();
+        source.addSink(graph1);
+        //source.readAll(bs);
+
+        Dijkstra dijkstra = new Dijkstra( Element.EDGE_AND_NODE, "days", "Nicolas");
+
+        // Compute the shortest paths in g from A to all nodes
+        dijkstra.init(graph1);
+        dijkstra.setSource(graph1.getNode("Nicolas"));
+        dijkstra.compute();
+
+        /*
+        // Print the lengths of all the shortest paths
+        for (Node node : graph1)
+            System.out.printf("%s->%s:%6.2f%n", dijkstra.getSource(), node, dijkstra.getPathLength(node));
+
+        // Color in blue all the nodes on the shortest path form A to B
+        for (Node node : dijkstra.getPathNodes(graph1.getNode("B")))
+            node.addAttribute("ui.style", "fill-color: blue;");
+
+        // Color in red all the edges in the shortest path tree
+        for (Edge edge : dijkstra.getTreeEdges())
+            edge.addAttribute("ui.style", "fill-color: red;");
+
+        // Print the shortest path from A to B
+        System.out.println(dijkstra.getPath(graph1.getNode("B")));
+
+        // Build a list containing the nodes in the shortest path from A to B
+        // Note that nodes are added at the beginning of the list
+        // because the iterator traverses them in reverse order, from B to A
+        List <Node> list1 = new ArrayList<Node>();
+        for (Node node : dijkstra.getPathNodes(graph1.getNode("B")))
+            list1.add(0, node);
+
+        // A shorter but less efficient way to do the same thing
+        List<Node> list2 = dijkstra.getPath(graph1.getNode("B")).getNodePath();*/
     }
+
 
     private static void displayAutoLayout(Graph graph1) {
 
-        Viewer viewer = graph1.display(false);
+        //Viewer viewer = graph1.display(false);
         // not functional atm
         HierarchicalLayout hl = new HierarchicalLayout();
-        viewer.enableAutoLayout(hl);
+        //viewer.enableAutoLayout(hl);
 
 
         graph1.setStrict(false);
         graph1.setAutoCreate( true );
 
         // defining css style for graph
-        graph1.setAttribute("ui.stylesheet", "graph { text-mode: normal;" +
-                                                "text-alignment: at-right; text-color: #222;}" +
-                                                "edge { shape: cubic-curve; arrow-shape: arrow;}");
+        graph1.setAttribute("ui.stylesheet", "graph { text-mode: normal; text-alignment: at-right; }" +
+                 " edge { text-mode: normal; text-visibility-mode: normal; shape: cubic-curve; arrow-shape: arrow; }");
         // passing false will deactivate auto placement - not recommended
         graph1.display();
     }
@@ -126,10 +191,9 @@ public class Main {
         // defining css style for graph
         graph1.removeAttribute("ui.stylesheet");
         //graph1.setAttribute("ui.stylehseet", "url(C:\\Users\\KevinHilzinger\\IdeaProjects\\GraphVisualization\\stylesheet.css)");
-        graph1.setAttribute("ui.stylesheet", "graph {    text-mode: normal; " +
-                                                "text-alignment: at-right; text-color: #222;}" +
-                                                "edge { shape: cubic-curve; arrow-shape: arrow;}");
-        // passing false will deactivate auto placement - not recommended
+        graph1.setAttribute("ui.stylesheet", "graph { text-mode: normal; text-alignment: at-right;" +
+                "text-color: #222; } edge { shape: cubic-curve; arrow-shape: arrow; }");
+        // passing false will deactivate auto placement to place as stated with xy attribute
         graph1.display(false);
     }
 
