@@ -74,12 +74,17 @@ public class Main {
                         e.getStartHost().getPersonName(),
                         e.getEndHost().getPersonName(), true)
                     .setAttribute("days", e.getDistance());
+
         }
 
         // defining what to put as label
         for (Node node : graph1) {
             node.setAttribute("ui.label", node.getId());
         }
+
+        graph1.getEachEdge().forEach(n -> n.setAttribute("ui.label", Integer.toString(n.getAttribute("days"))));
+
+
 
         displayAutoLayout(graph1);
         displayFixedLayout(graph1);
