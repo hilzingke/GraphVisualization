@@ -74,7 +74,6 @@ public class Main {
                         e.getStartHost().getPersonName(),
                         e.getEndHost().getPersonName(), true)
                     .setAttribute("days", e.getDistance());
-
         }
 
         // defining what to put as label
@@ -82,6 +81,7 @@ public class Main {
             node.setAttribute("ui.label", node.getId());
         }
 
+        // setting edge weight as label for visualization
         graph1.getEachEdge().forEach(n -> n.setAttribute("ui.label", Integer.toString(n.getAttribute("days"))));
 
 
@@ -98,55 +98,6 @@ public class Main {
         for (Host g : personList) {
             my_graph = my_graph + "an" + g.getPersonName() + "\n";
         }
-                /*+ "an A \n"
-                + "an B \n"
-                + "an C \n"
-                + "an D \n"
-                + "an E \n"
-                + "an F \n"
-                + "ae AB A B weight:1 \n"
-                + "ae AD A D weight:1 \n"
-                + "ae BC B C weight:1 \n"
-                + "ae CF C F weight:10 \n"
-                + "ae DE D E weight:1 \n"
-                        + "ae EF E F weight:1 \n"*/
-        ;
-        FileSourceDGS source = new FileSourceDGS();
-        source.addSink(graph1);
-        //source.readAll(bs);
-
-        Dijkstra dijkstra = new Dijkstra( Element.EDGE_AND_NODE, "days", "Nicolas");
-
-        // Compute the shortest paths in g from A to all nodes
-        dijkstra.init(graph1);
-        dijkstra.setSource(graph1.getNode("Nicolas"));
-        dijkstra.compute();
-
-        /*
-        // Print the lengths of all the shortest paths
-        for (Node node : graph1)
-            System.out.printf("%s->%s:%6.2f%n", dijkstra.getSource(), node, dijkstra.getPathLength(node));
-
-        // Color in blue all the nodes on the shortest path form A to B
-        for (Node node : dijkstra.getPathNodes(graph1.getNode("B")))
-            node.addAttribute("ui.style", "fill-color: blue;");
-
-        // Color in red all the edges in the shortest path tree
-        for (Edge edge : dijkstra.getTreeEdges())
-            edge.addAttribute("ui.style", "fill-color: red;");
-
-        // Print the shortest path from A to B
-        System.out.println(dijkstra.getPath(graph1.getNode("B")));
-
-        // Build a list containing the nodes in the shortest path from A to B
-        // Note that nodes are added at the beginning of the list
-        // because the iterator traverses them in reverse order, from B to A
-        List <Node> list1 = new ArrayList<Node>();
-        for (Node node : dijkstra.getPathNodes(graph1.getNode("B")))
-            list1.add(0, node);
-
-        // A shorter but less efficient way to do the same thing
-        List<Node> list2 = dijkstra.getPath(graph1.getNode("B")).getNodePath();*/
     }
 
 
